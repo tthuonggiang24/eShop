@@ -2,6 +2,7 @@ using eShop.DataStore.HardCode;
 using eShop.UseCases.PluginInterfaces.DataStore;
 using eShop.UseCases.SearchProductScreen;
 using eShop.UseCases.ViewProductScreen;
+using eShop.UseCases.ViewProductScreen.interfaces;
 using eShop.Web.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;

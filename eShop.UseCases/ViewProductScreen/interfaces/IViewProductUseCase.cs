@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShop.UseCases.ViewProductScreen
+namespace eShop.UseCases.ViewProductScreen.interfaces
 {
     public interface IViewProductUseCase
     {
