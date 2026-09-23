@@ -1,5 +1,7 @@
 using eShop.DataStore.HardCode;
+using eShop.ShoppingCart.LocalStorage;
 using eShop.UseCases.PluginInterfaces.DataStore;
+using eShop.UseCases.PluginInterfaces.UI;
 using eShop.UseCases.SearchProductScreen;
 using eShop.UseCases.ViewProductScreen;
 using eShop.UseCases.ViewProductScreen.interfaces;
@@ -17,8 +19,11 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddSingleton<IProductRepository, ProductReponsitory>();
 
+builder.Services.AddScoped<IShoppingCart, ShoppingCart>();
+
 builder.Services.AddTransient<IViewProductUseCase, ViewProductUseCase>();
 builder.Services.AddTransient<ISearchProductUseCase, SearchProductUseCase>();
+builder.Services.AddTransient<IAddProductToCartUseCase, AddProductToCartUseCase>();
 
 var app = builder.Build();
 
