@@ -27,7 +27,7 @@ namespace eShop.CoreBussiness.Models
         public void AddProduct(int productId, int qty, double price)
         {
             var item = LineItems.FirstOrDefault(x => x.ProductId == productId);
-            if (item == null)
+            if (item != null)
             {
                 item.Quantity += qty;
             }
@@ -39,7 +39,7 @@ namespace eShop.CoreBussiness.Models
         public void RemoveProduct(int productId)
         {
             var item = LineItems.FirstOrDefault(x => x.ProductId == productId);
-            if (item == null)
+            if (item != null)
                 LineItems.Remove(item);
         }
     }

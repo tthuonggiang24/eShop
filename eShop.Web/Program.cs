@@ -3,6 +3,8 @@ using eShop.ShoppingCart.LocalStorage;
 using eShop.UseCases.PluginInterfaces.DataStore;
 using eShop.UseCases.PluginInterfaces.UI;
 using eShop.UseCases.SearchProductScreen;
+using eShop.UseCases.ShoppingCartScreen;
+using eShop.UseCases.ShoppingCartScreen.interfaces;
 using eShop.UseCases.ViewProductScreen;
 using eShop.UseCases.ViewProductScreen.interfaces;
 using eShop.Web.Data;
@@ -24,6 +26,7 @@ builder.Services.AddScoped<IShoppingCart, ShoppingCart>();
 builder.Services.AddTransient<IViewProductUseCase, ViewProductUseCase>();
 builder.Services.AddTransient<ISearchProductUseCase, SearchProductUseCase>();
 builder.Services.AddTransient<IAddProductToCartUseCase, AddProductToCartUseCase>();
+builder.Services.AddTransient<IViewShoppingCartUseCase, ViewShoppingCartUseCase>();
 
 var app = builder.Build();
 
