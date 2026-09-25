@@ -11,5 +11,6 @@ namespace eShop.UseCases.PluginInterfaces.StateStore
         //Lấy số biến của các item trong giỏ hàng
         Task<int> GetItemCount();
         void UpdateLineItemsCount();
+        void UpdateProductQuantity();
     }
 }

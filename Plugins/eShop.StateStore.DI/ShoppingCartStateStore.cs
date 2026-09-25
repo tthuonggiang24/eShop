@@ -27,5 +27,10 @@ namespace eShop.StateStore.DI
         {
             base.BroadcastStateChange();
         }
+
+        public void UpdateProductQuantity()
+        {
+            base.BroadcastStateChange();
+        }
     }
 }
