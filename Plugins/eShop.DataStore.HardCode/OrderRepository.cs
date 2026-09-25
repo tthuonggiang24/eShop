@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace eShop.DataStore.HardCode
 {
-    internal class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private Dictionary<int, Order> orders;
         public OrderRepository() 
@@ -18,7 +18,7 @@ namespace eShop.DataStore.HardCode
         public int CreateOrder(Order order)
         {
             order.OrderId = orders.Count + 1;
-            order.UniqueId = Guid.NewGuid().ToString();
+            //order.UniqueId = Guid.NewGuid().ToString();
             orders.Add(order.OrderId.Value, order);
             return order.OrderId.Value;
         }

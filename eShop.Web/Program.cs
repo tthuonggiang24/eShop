@@ -1,6 +1,9 @@
+using eShop.CoreBussiness.Services;
+using eShop.CoreBussiness.Services.@interface;
 using eShop.DataStore.HardCode;
 using eShop.ShoppingCart.LocalStorage;
 using eShop.StateStore.DI;
+using eShop.UseCases.OrderConfirmationScreen;
 using eShop.UseCases.PluginInterfaces.DataStore;
 using eShop.UseCases.PluginInterfaces.StateStore;
 using eShop.UseCases.PluginInterfaces.UI;
@@ -22,16 +25,20 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddSingleton<IProductRepository, ProductReponsitory>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
 builder.Services.AddScoped<IShoppingCart, ShoppingCart>();
 builder.Services.AddScoped<IShoppingCartStateStore, ShoppingCartStateStore>();
 
+builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IViewProductUseCase, ViewProductUseCase>();
 builder.Services.AddTransient<ISearchProductUseCase, SearchProductUseCase>();
 builder.Services.AddTransient<IAddProductToCartUseCase, AddProductToCartUseCase>();
 builder.Services.AddTransient<IViewShoppingCartUseCase, ViewShoppingCartUseCase>();
 builder.Services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
 builder.Services.AddTransient<IUpdateQuantityUseCase, UpdateQuantityUseCase>();
+builder.Services.AddTransient<IPlaceOrderUseCase, PlaceOrderUseCase>();
+builder.Services.AddTransient<IViewOrderConfirmationUseCase, ViewOrderConfirmationUseCase>();
 
 
 
