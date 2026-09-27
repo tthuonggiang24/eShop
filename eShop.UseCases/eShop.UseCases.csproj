@@ -14,4 +14,8 @@
     <ProjectReference Include="..\eShop.CoreBussiness\eShop.CoreBussiness.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CustomerPortal\" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,10 @@ using eShop.CoreBussiness.Services.@interface;
 using eShop.DataStore.HardCode;
 using eShop.ShoppingCart.LocalStorage;
 using eShop.StateStore.DI;
+using eShop.UseCases.AdminPortal.OrderDetailScreen;
+using eShop.UseCases.AdminPortal.OrderDetailScreen.Interfaces;
+using eShop.UseCases.AdminPortal.OutstandingOrdersScreen;
+using eShop.UseCases.AdminPortal.ProcessedOrdersScreen;
 using eShop.UseCases.OrderConfirmationScreen;
 using eShop.UseCases.PluginInterfaces.DataStore;
 using eShop.UseCases.PluginInterfaces.StateStore;
@@ -40,6 +44,10 @@ builder.Services.AddTransient<IUpdateQuantityUseCase, UpdateQuantityUseCase>();
 builder.Services.AddTransient<IPlaceOrderUseCase, PlaceOrderUseCase>();
 builder.Services.AddTransient<IViewOrderConfirmationUseCase, ViewOrderConfirmationUseCase>();
 
+builder.Services.AddTransient<IViewOutstandingOrdersUseCase, ViewOutstandingOrdersUseCase>();
+builder.Services.AddTransient<IViewOrderDetailUseCase, ViewOrderDetailUseCase>();
+builder.Services.AddTransient<IProcessOrderUseCase, ProcessOrderUseCase>();
+builder.Services.AddTransient<IViewProcessedOrdersUseCase, ViewProcessedOrdersUseCase>();
 
 
 var app = builder.Build();

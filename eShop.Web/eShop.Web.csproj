@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eShop.UseCases\eShop.UseCases.csproj" />
+    <ProjectReference Include="..\eShop.Web.Modules\eShop.Web.AdminPortal\eShop.Web.AdminPortal.csproj" />
     <ProjectReference Include="..\eShop.Web.Modules\eShop.Web.CustomerPortal\eShop.Web.CustomerPortal.csproj" />
     <ProjectReference Include="..\Plugins\eShop.DataStore.HardCode\eShop.DataStore.HardCode.csproj" />
     <ProjectReference Include="..\Plugins\eShop.ShoppingCart.Local\eShop.ShoppingCart.LocalStorage.csproj" />
