@@ -3,18 +3,33 @@
         <li class="nav-item">
             <a class="navbar-brand" href="">eShop</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="outstandingorders">Outstanding Orders</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="processedorders">Processed Orders</a>
-        </li>
-        <li class="nav-item ml-auto">
-            <NavLink class="nav-link" href="cart">
-                <eShop.Web.CustomerPortal.Controls.CartComponent>
 
-                </eShop.Web.CustomerPortal.Controls.CartComponent>
-            </NavLink>
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item">
+                    <a class="nav-link" href="outstandingorders">Outstanding Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="processedorder">Processed Orders</a>
+                </li>
+            </Authorized>
+
+        </AuthorizeView>
+
+        
+        <li class="nav-item ml-auto">
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="nav-link" href="/logout">
+                        Sign Out
+                    </NavLink>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="cart">
+                        <eShop.Web.CustomerPortal.Controls.CartComponent></eShop.Web.CustomerPortal.Controls.CartComponent>
+                    </NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
         </li>
     </ul>
 </div>
