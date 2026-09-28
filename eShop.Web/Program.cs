@@ -23,6 +23,18 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//add services for Auth
+builder.Services.AddControllers();
+builder.Services.AddAuthentication("eShop.CookieAuth")
+    .AddCookie("eShop.CookieAuth", config =>
+    {
+        config.Cookie.Name = "eShop.CookieAuth";
+        config.LoginPath = "/authenticate";
+    }
+    );
+
+builder.Services.AddAuthorization();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -66,6 +78,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
