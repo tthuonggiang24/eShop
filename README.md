@@ -4,6 +4,7 @@
 
 
 | **Họ và tên** | Trần Thị Hương Giang |
+|---|---|
 | **Mã sinh viên** | 23K4080055 |
 | **Lớp** | K57 Tin học kinh tế |
 | **Trường** | Trường Đại học Kinh tế - Đại học Huế |
