@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\eShop.UseCases\eShop.UseCases.csproj" />
-    <ProjectReference Include="..\eShop.DataStore.HardCode\eShop.DataStore.HardCode.csproj" />
   </ItemGroup>
 
 </Project>
