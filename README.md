@@ -3,7 +3,7 @@
 ## 👩🎓 Thông tin sinh viên
 
 
-| **Họ và tên** | Trần Thị Hương Giang |
+| **Tác giả** | Trần Thị Hương Giang |
 |---|---|
 | **Mã sinh viên** | 23K4080055 |
 | **Lớp** | K57 Tin học kinh tế |
