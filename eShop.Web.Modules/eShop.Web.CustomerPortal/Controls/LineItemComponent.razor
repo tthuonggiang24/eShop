@@ -1,54 +1,107 @@
-﻿@inject IDeleteProductUseCase deleteProductUseCase
+@inject IDeleteProductUseCase deleteProductUseCase
 @inject IUpdateQuantityUseCase updateQuantityUseCase
 
 @if (LineItem != null && LineItem.Product != null)
 {
-	<li class="row">
-		<div class="col">
-			<img src="@LineItem.Product.ImageLink"/>
+    <div class="cart-item-row p-3 mb-3 bg-white border rounded d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="cart-item-thumbnail">
+                <img src="@LineItem.Product.ImageLink" alt="@LineItem.Product.Name" />
+            </div>
+            <div>
+                <h6 class="mb-1 fw-bold">
+                    <NavLink href=@($"product/{LineItem.ProductId}") class="text-dark text-decoration-none">
+                        @LineItem.Product.Name
+                    </NavLink>
+                </h6>
+                <div class="text-muted small">
+                    Unit Price: <strong>@LineItem.Product.Price.ToString("c")</strong>
+                </div>
+            </div>
+        </div>
 
-		</div>
-		<div class="col">
-			<h5>@LineItem.Product.Name</h5>
-			<div>
-				Quantity:&nbsp;&nbsp;
-				<input type="number" min="0" value="@LineItem.Quantity" @onchange="HandleQuantityChange"/>
-			</div>
-			<div>
-				Price&nbsp;&nbsp;@LineItem.Product.Price.ToString("c")
-			</div>
-		</div>
-		<div class="col">
-			<button class="btn btn-light" @onclick="@(() => DeleteProduct(LineItem.ProductId))">Delete</button>
-		</div>
-	</li>
+        <div class="d-flex align-items-center justify-content-between justify-content-sm-end gap-4">
+            <div class="d-flex align-items-center gap-2">
+                <label class="small text-muted mb-0">Qty:</label>
+                <input type="number" 
+                       min="0" 
+                       class="form-control form-control-sm text-center quantity-input" 
+                       value="@LineItem.Quantity" 
+                       @onchange="HandleQuantityChange" />
+            </div>
+
+            <div class="text-end" style="min-width: 90px;">
+                <div class="small text-muted d-sm-none">Subtotal:</div>
+                <div class="fw-bold text-dark">
+                    @((LineItem.Product.Price * LineItem.Quantity).ToString("c"))
+                </div>
+            </div>
+
+            <button type="button" 
+                    class="btn btn-sm btn-outline-danger border-0 p-2" 
+                    title="Remove item" 
+                    @onclick="@(() => DeleteProduct(LineItem.ProductId))">
+                <span class="oi oi-trash" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
 }
 
+<style>
+    .cart-item-row {
+        box-shadow: var(--shadow-xs);
+        transition: border-color 0.15s ease;
+    }
+    .cart-item-row:hover {
+        border-color: #cbd5e1;
+    }
+    .cart-item-thumbnail {
+        width: 64px;
+        height: 64px;
+        background-color: #fafafa;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 1px solid var(--color-border);
+    }
+    .cart-item-thumbnail img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        padding: 4px;
+    }
+    .quantity-input {
+        width: 64px;
+    }
+</style>
 
 @code {
-	[Parameter]
-	public OrderLineItem LineItem { get; set; }
+    [Parameter]
+    public OrderLineItem LineItem { get; set; }
 
-	[Parameter]
-	public EventCallback<Order> OnDeleteProduct { get; set; }
+    [Parameter]
+    public EventCallback<Order> OnDeleteProduct { get; set; }
 
-	[Parameter]
-	public EventCallback<Order> OnUpdateQuantity { get; set; }
+    [Parameter]
+    public EventCallback<Order> OnUpdateQuantity { get; set; }
 
-	async void HandleQuantityChange(ChangeEventArgs e)
-	{
-		if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString())) return;
-		int qty = 0;
-		if(int.TryParse(e.Value.ToString(), out qty))
-		{
-			if(qty < 0) return;
-			var order = await updateQuantityUseCase.Execute(LineItem.ProductId, qty);
-			await OnUpdateQuantity.InvokeAsync(order);
-		}
-	}
-	async void DeleteProduct(int productId)
-	{
-		var order = await deleteProductUseCase.Execute(productId);
-		OnDeleteProduct.InvokeAsync(order);
-	}
+    private async Task HandleQuantityChange(ChangeEventArgs e)
+    {
+        if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString())) return;
+        if (int.TryParse(e.Value.ToString(), out int qty))
+        {
+            if (qty < 0) return;
+            var order = await updateQuantityUseCase.Execute(LineItem.ProductId, qty);
+            await OnUpdateQuantity.InvokeAsync(order);
+        }
+    }
+
+    private async Task DeleteProduct(int productId)
+    {
+        var order = await deleteProductUseCase.Execute(productId);
+        await OnDeleteProduct.InvokeAsync(order);
+    }
 }

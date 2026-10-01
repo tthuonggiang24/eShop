@@ -1,48 +1,82 @@
-﻿@page "/placeorder"
+@page "/placeorder"
 
 @inject NavigationManager navigationManager
 @inject IViewShoppingCartUseCase viewShoppingCartUseCase
 @inject IPlaceOrderUseCase PlaceOrderUseCase
 
-<h3>Placing Order</h3>
-<br/>
+<div class="checkout-page py-2">
+    <div class="mb-4">
+        <NavLink href="cart" class="btn btn-sm btn-light border d-inline-flex align-items-center gap-2">
+            <span class="oi oi-arrow-left" aria-hidden="true"></span>
+            <span>Return to Cart</span>
+        </NavLink>
+    </div>
 
-@if (order != null)
-{
-	<div class="row">
-		<div class="col">
-			<CustomerFormComponent OnCustomerInfoSubmitted="HandleCustomerInfoSubmitted"></CustomerFormComponent>
-		</div>
-		<div class="col">
-			<OrderSummaryComponent order="order" HidePlaceOrder="true"></OrderSummaryComponent>
-		</div>
-	</div>
-}
+    <div class="mb-4 pb-2 border-bottom">
+        <h1 class="page-title mb-1">Checkout</h1>
+        <p class="text-muted small mb-0">Please review your order summary and provide shipping details</p>
+    </div>
+
+    @if (order != null && order.LineItems != null && order.LineItems.Any())
+    {
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <CustomerFormComponent OnCustomerInfoSubmitted="HandleCustomerInfoSubmitted" />
+            </div>
+            <div class="col-lg-5">
+                <div class="sticky-top" style="top: 5.5rem;">
+                    <OrderSummaryComponent order="order" HidePlaceOrder="true" />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <span class="oi oi-warning" aria-hidden="true"></span>
+            </div>
+            <h4 class="empty-state-title">No Items to Checkout</h4>
+            <p class="empty-state-text">Your cart is empty. Please add products to your cart before proceeding to checkout.</p>
+            <NavLink href="products" class="btn btn-primary">
+                Explore Products
+            </NavLink>
+        </div>
+    }
+</div>
+
+<style>
+    .page-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+</style>
 
 @code {
-	private Order order;
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			order = await viewShoppingCartUseCase.Execute();
-			StateHasChanged();
-		}
-	}
-	private async void HandleCustomerInfoSubmitted(CustomerViewModel customer)
-	{
-		var mapper = new AutoMapper.MapperConfiguration(cfg => cfg.CreateMap<CustomerViewModel, Order>()).CreateMapper();
-		mapper.Map<CustomerViewModel, Order>(customer, order);
+    private Order? order;
 
-		var orderUniqueId = await PlaceOrderUseCase.Execute(order);
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            order = await viewShoppingCartUseCase.Execute();
+            StateHasChanged();
+        }
+    }
 
-		if (string.IsNullOrEmpty(orderUniqueId))
-		{
-			//TODO: display error
-		}
-		else
-		{
-			navigationManager.NavigateTo($"orderconfirm/{orderUniqueId}");
-		}
-	}
+    private async void HandleCustomerInfoSubmitted(CustomerViewModel customer)
+    {
+        if (order == null) return;
+
+        var mapper = new AutoMapper.MapperConfiguration(cfg => cfg.CreateMap<CustomerViewModel, Order>()).CreateMapper();
+        mapper.Map<CustomerViewModel, Order>(customer, order);
+
+        var orderUniqueId = await PlaceOrderUseCase.Execute(order);
+
+        if (!string.IsNullOrEmpty(orderUniqueId))
+        {
+            navigationManager.NavigateTo($"orderconfirm/{orderUniqueId}");
+        }
+    }
 }

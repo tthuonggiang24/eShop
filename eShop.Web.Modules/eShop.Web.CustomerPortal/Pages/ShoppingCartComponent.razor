@@ -1,53 +1,79 @@
-﻿@page "/cart"
+@page "/cart"
 @using eShop.UseCases.ShoppingCartScreen.interfaces
 
 @inject IViewShoppingCartUseCase viewShoppingCartUseCase
 
-<h3>Shopping Cart</h3>
-<br/>
-@if (order != null && order.LineItems != null && order.LineItems.Count > 0)
-{
-	<div class="row">
-		<div class="col-6">
-			<ul>
-				@for (int i = 0; i < order.LineItems.Count; i++)
-				{
-					<LineItemComponent 
-						LineItem="order.LineItems[i]"
-						OnDeleteProduct="HandleDeleteProduct"
-						OnUpdateQuantity="HandleUpdateQuantity"
-					></LineItemComponent>
-					@if (i < order.LineItems.Count - 1)
-					{
-						<li style="list-style:none">
-							<hr />
-						</li>
-					}
-				}
-			</ul>
-		</div>
-		<div class="col">
-			<OrderSummaryComponent order="order"></OrderSummaryComponent>
-		</div>
-	</div>
-}
+<div class="shopping-cart-page py-2">
+    <div class="d-flex align-items-baseline justify-content-between mb-4 pb-2 border-bottom">
+        <h1 class="page-title mb-0">Shopping Cart</h1>
+        <NavLink href="products" class="btn btn-sm btn-light border">
+            Continue Shopping
+        </NavLink>
+    </div>
+
+    @if (order != null && order.LineItems != null && order.LineItems.Count > 0)
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="cart-items-list">
+                    @for (int i = 0; i < order.LineItems.Count; i++)
+                    {
+                        <LineItemComponent 
+                            LineItem="order.LineItems[i]"
+                            OnDeleteProduct="HandleDeleteProduct"
+                            OnUpdateQuantity="HandleUpdateQuantity" />
+                    }
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 5.5rem;">
+                    <OrderSummaryComponent order="order" />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <span class="oi oi-cart" aria-hidden="true"></span>
+            </div>
+            <h4 class="empty-state-title">Your Cart is Empty</h4>
+            <p class="empty-state-text">Looks like you haven't added any products to your cart yet. Explore our store and find something you love!</p>
+            <NavLink href="products" class="btn btn-primary px-4 py-2">
+                Start Shopping
+            </NavLink>
+        </div>
+    }
+</div>
+
+<style>
+    .page-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+</style>
 
 @code {
-	private Order order;
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if(firstRender)
-		{
-			order = await viewShoppingCartUseCase.Execute();
-			StateHasChanged();
-		}
-	}
-	private void HandleDeleteProduct(Order order)
-	{
-		this.order = order;
-	}
-	private void HandleUpdateQuantity(Order order)
-	{
-		this.order = order;
-	}
+    private Order? order;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            order = await viewShoppingCartUseCase.Execute();
+            StateHasChanged();
+        }
+    }
+
+    private void HandleDeleteProduct(Order order)
+    {
+        this.order = order;
+    }
+
+    private void HandleUpdateQuantity(Order order)
+    {
+        this.order = order;
+    }
 }

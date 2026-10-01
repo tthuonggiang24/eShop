@@ -1,35 +1,50 @@
-﻿@if (Order != null)
+@if (Order != null)
 {
-	<tr>
-		<td>
-			@if(Order.DatePlaced.HasValue)
-			{
-				@Order.DatePlaced.Value.ToString("yyyy-MM-dd")
-			}
-		</td>
-		<td>
-			@if(!Order.DateProcessed.HasValue)
-			{
-				<NavLink href="@($"orderdetail/{Order.OrderId}")">
-					@Order.OrderId
-				</NavLink>
-			}
-			else
-			{
-				@Order.OrderId
-			}
-		</td>
-		<td>@Order.CustomerCountry</td>
-		<td>@Order.CustomerStateProvince</td>
-		<td>@Order.CustomerCity</td>
-		<td>@Order.CustomerName</td>
-	</tr>
+    <tr>
+        <td class="text-nowrap text-secondary">
+            @if (Order.DatePlaced.HasValue)
+            {
+                <span class="small">@Order.DatePlaced.Value.ToString("MMM dd, yyyy")</span>
+            }
+            else
+            {
+                <span class="text-muted small">-</span>
+            }
+        </td>
+        <td>
+            <NavLink href="@($"orderdetail/{Order.OrderId}")" class="fw-bold font-monospace text-decoration-none text-primary">
+                #@Order.OrderId
+            </NavLink>
+        </td>
+        <td>
+            <div class="fw-medium text-dark">@Order.CustomerName</div>
+            <div class="small text-muted">@Order.CustomerCity, @Order.CustomerStateProvince, @Order.CustomerCountry</div>
+        </td>
+        <td>
+            @if (Order.DateProcessed.HasValue)
+            {
+                <span class="badge badge-clean badge-success-clean">
+                    <span class="oi oi-check me-1 small" aria-hidden="true"></span>
+                    <span>Processed (@Order.DateProcessed.Value.ToString("MM/dd"))</span>
+                </span>
+            }
+            else
+            {
+                <span class="badge badge-clean badge-pending">
+                    <span class="oi oi-clock me-1 small" aria-hidden="true"></span>
+                    <span>Pending</span>
+                </span>
+            }
+        </td>
+        <td class="text-end">
+            <NavLink href="@($"orderdetail/{Order.OrderId}")" class="btn btn-sm btn-light border">
+                View
+            </NavLink>
+        </td>
+    </tr>
 }
 
-
-
 @code {
-	[Parameter]
-	public Order Order{ get; set; }
-
+    [Parameter]
+    public Order Order { get; set; }
 }

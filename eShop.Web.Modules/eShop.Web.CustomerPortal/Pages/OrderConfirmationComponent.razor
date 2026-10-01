@@ -1,54 +1,128 @@
-﻿@page "/orderconfirm/{uniqueId}"
+@page "/orderconfirm/{uniqueId}"
 
 @inject IViewOrderConfirmationUseCase viewOrderConfirmationUseCase
 
-<h3>Order Confirmation</h3>
-<br/>
+<div class="order-confirmation-page py-3">
+    @if (order != null)
+    {
+        <div class="success-banner text-center mb-5 py-4">
+            <div class="success-badge mb-3">
+                <span class="oi oi-circle-check" aria-hidden="true"></span>
+            </div>
+            <h1 class="page-title mb-2">Order Confirmed!</h1>
+            <p class="text-muted">Thank you for your purchase. We have received your order.</p>
+            <div class="mt-2">
+                <span class="badge bg-light text-dark border px-3 py-2 font-monospace">
+                    Reference ID: @UniqueId
+                </span>
+            </div>
+        </div>
 
-@if (order != null)
-{
-	<p>
-		<b>Shipping Info:</b>
-	</p>
-	<p>@order.CustomerName</p>
-	<p>@order.CustomerAddress</p>
-	<p>@order.CustomerCity</p>
-	<p>@order.CustomerStateProvince</p>
-	<p>@order.CustomerCountry</p>
-	<br/>
-	<OrderSummaryComponent order="order" HidePlaceOrder="true"></OrderSummaryComponent>
+        <div class="row g-4 mb-4">
+            <div class="col-md-7">
+                <div class="card h-100 border shadow-sm">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                            <span class="oi oi-map-marker text-primary" aria-hidden="true"></span>
+                            <span>Shipping Address</span>
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-2">@order.CustomerName</h6>
+                        <p class="text-secondary mb-1">@order.CustomerAddress</p>
+                        <p class="text-secondary mb-0">
+                            @order.CustomerCity, @order.CustomerStateProvince, @order.CustomerCountry
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-	<br/>
+            <div class="col-md-5">
+                <OrderSummaryComponent order="order" HidePlaceOrder="true" />
+            </div>
+        </div>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Product Name</th>
-				<th>Quantity</th>
-				<th>Price</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach(var item in order.LineItems)
-			{
-				<tr>
-					<td>@item.Product.Name</td>
-					<td>@item.Quantity</td>
-					<td>@item.Product.Price</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-}
+        <div class="card border shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="mb-0 fw-bold">Ordered Items</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Price</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (order.LineItems != null)
+                        {
+                            @foreach (var item in order.LineItems)
+                            {
+                                <tr>
+                                    <td class="fw-medium">@item.Product.Name</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end text-muted">@item.Product.Price.ToString("c")</td>
+                                    <td class="text-end fw-bold">@((item.Product.Price * item.Quantity).ToString("c"))</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <NavLink href="products" class="btn btn-primary px-5 py-3">
+                Continue Shopping
+            </NavLink>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <span class="oi oi-clock" aria-hidden="true"></span>
+            </div>
+            <h4 class="empty-state-title">Retrieving Order Details...</h4>
+            <p class="empty-state-text">Please wait while we locate your order information.</p>
+        </div>
+    }
+</div>
+
+<style>
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+    .success-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        background-color: var(--color-success-light);
+        color: var(--color-success);
+        border-radius: var(--radius-pill);
+        font-size: 2rem;
+    }
+</style>
 
 @code {
-	private Order order;
-	[Parameter]
-	public string UniqueId { get; set; }
-	protected override void OnParametersSet()
-	{
-		base.OnParametersSet();
-		if (!string.IsNullOrWhiteSpace(UniqueId))
-			order = viewOrderConfirmationUseCase.Execute(UniqueId);
-	}
+    private Order? order;
+
+    [Parameter]
+    public string UniqueId { get; set; } = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (!string.IsNullOrWhiteSpace(UniqueId))
+        {
+            order = viewOrderConfirmationUseCase.Execute(UniqueId);
+        }
+    }
 }

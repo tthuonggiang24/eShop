@@ -1,40 +1,71 @@
-﻿@page "/"
+@page "/"
 @page "/products"
 
-
 @inject ISearchProductUseCase searchProduct
-<h3>Search Product Component</h3>
-<br />
-<SearchBarComponent OnSearch="HandleSearch"></SearchBarComponent>
-<br/>
-<br/>
 
-@if(products != null && products.Count() > 0)
-{
-	<div class="row">
-		@foreach(var product in products)
-		{
-			<ProductCardComponent product="product"></ProductCardComponent>
-		}
-	)
-	</div>
-}
-else
-{
-	<text>No Products Found.</text>
-}
+<div class="products-page">
+    <div class="hero-section mb-4 text-center py-4">
+        <h1 class="hero-title mb-2">Explore Our Collection</h1>
+        <p class="hero-subtitle text-muted mb-4">Discover curated, high-quality products crafted for you</p>
+        <div class="d-flex justify-content-center">
+            <SearchBarComponent OnSearch="HandleSearch" />
+        </div>
+    </div>
 
+    @if (products != null && products.Any())
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted small">Showing <strong>@products.Count()</strong> items</span>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var product in products)
+            {
+                <div class="col">
+                    <ProductCardComponent product="product" />
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+            </div>
+            <h4 class="empty-state-title">No Products Found</h4>
+            <p class="empty-state-text">We couldn't find any products matching your search criteria. Try a different keyword.</p>
+            <button class="btn btn-outline-primary" @onclick="() => HandleSearch(string.Empty)">
+                View All Products
+            </button>
+        </div>
+    }
+</div>
+
+<style>
+    .hero-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+    .hero-subtitle {
+        font-size: 1.05rem;
+        max-width: 540px;
+        margin: 0 auto;
+    }
+</style>
 
 @code {
-	private IEnumerable<Product> products; //trạng thái hiện nay
-	//event
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-		products = searchProduct.Execute();
-	}
-	private void HandleSearch(string filter)
-	{
-		products = searchProduct.Execute(filter);
-	}
+    private IEnumerable<Product> products = Enumerable.Empty<Product>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        products = searchProduct.Execute();
+    }
+
+    private void HandleSearch(string filter)
+    {
+        products = searchProduct.Execute(filter);
+    }
 }

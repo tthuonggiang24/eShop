@@ -1,22 +1,64 @@
-﻿<div class="mb-3 row">
-		<label for="filter">Search:&nbsp;</label>
-	<div class="col-auto">
-			<input type="text" class="form-control" id="filter" @bind-value="filter" />
-	</div>
-	<div class="col-auto">
-			<button type="button" class="btn btn-primary mb-2" @onclick="HandleSearch">Search</button>
-
-	</div>
+<div class="search-bar-wrapper mb-4">
+    <div class="input-group">
+        <span class="input-group-text bg-white border-end-0 text-muted">
+            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+        </span>
+        <input type="text" 
+               class="form-control border-start-0 ps-0 shadow-none" 
+               id="filter" 
+               placeholder="Search products by name or brand..." 
+               @bind-value="filter" 
+               @onkeyup="HandleKeyUp" />
+        <button type="button" 
+                class="btn btn-primary px-4" 
+                @onclick="HandleSearch">
+            Search
+        </button>
+    </div>
 </div>
 
+<style>
+    .search-bar-wrapper {
+        max-width: 600px;
+    }
+    .search-bar-wrapper .input-group {
+        box-shadow: var(--shadow-sm);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+    }
+    .search-bar-wrapper .input-group-text {
+        border-color: var(--color-border);
+        padding-left: 1rem;
+    }
+    .search-bar-wrapper .form-control {
+        border-color: var(--color-border);
+        font-size: 0.95rem;
+    }
+    .search-bar-wrapper .form-control:focus {
+        border-color: var(--color-border);
+        box-shadow: none;
+    }
+    .search-bar-wrapper .input-group:focus-within {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+</style>
 
 @code {
-	private string filter;
+    private string filter = string.Empty;
 
-	[Parameter]
-	public EventCallback<string> OnSearch { get; set; }
-	private void HandleSearch()
-	{
-		OnSearch.InvokeAsync(filter); //khi bấm một nút, onsearch sẽ được gọi và truyền cho cha của nó
-	}
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    private void HandleSearch()
+    {
+        OnSearch.InvokeAsync(filter);
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            HandleSearch();
+        }
+    }
 }

@@ -1,30 +1,71 @@
-﻿@implements IDisposable
+@implements IDisposable
 
 @inject IShoppingCartStateStore shoppingCartStateStore
-<div>
-	Cart:&nbsp; @lineItemCount
+
+<div class="cart-badge-button d-inline-flex align-items-center gap-2 px-3 py-2">
+    <span class="oi oi-cart cart-icon" aria-hidden="true"></span>
+    <span class="cart-label">Cart</span>
+    <span class="cart-count badge @(lineItemCount > 0 ? "badge-active" : "badge-inactive")">
+        @lineItemCount
+    </span>
 </div>
 
-
+<style>
+    .cart-badge-button {
+        background-color: #ffffff;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-pill);
+        color: var(--color-text-main);
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.15s ease;
+        box-shadow: var(--shadow-xs);
+    }
+    .cart-badge-button:hover {
+        background-color: var(--color-surface-subtle);
+        border-color: #cbd5e1;
+    }
+    .cart-icon {
+        font-size: 0.95rem;
+        color: var(--color-text-muted);
+    }
+    .cart-count {
+        border-radius: var(--radius-pill);
+        padding: 0.2rem 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+    .badge-active {
+        background-color: var(--color-primary);
+        color: #ffffff;
+    }
+    .badge-inactive {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-muted);
+    }
+</style>
 
 @code {
-	private int lineItemCount = 0;
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if(firstRender)
-		{
-			shoppingCartStateStore.AddStateChangeListener(HandleShoppingCartStateChanged);
-			lineItemCount = await shoppingCartStateStore.GetItemCount();
-			StateHasChanged();
-		}
-	}
-	private async void HandleShoppingCartStateChanged()
-	{
-		lineItemCount = await shoppingCartStateStore.GetItemCount();
-		StateHasChanged();
-	} 
-	public void Dispose()
-	{
-		shoppingCartStateStore.RemoveStateChangeListener(HandleShoppingCartStateChanged);
-	}
+    private int lineItemCount = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            shoppingCartStateStore.AddStateChangeListener(HandleShoppingCartStateChanged);
+            lineItemCount = await shoppingCartStateStore.GetItemCount();
+            StateHasChanged();
+        }
+    }
+
+    private async void HandleShoppingCartStateChanged()
+    {
+        lineItemCount = await shoppingCartStateStore.GetItemCount();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        shoppingCartStateStore.RemoveStateChangeListener(HandleShoppingCartStateChanged);
+    }
 }

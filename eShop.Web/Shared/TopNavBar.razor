@@ -1,39 +1,93 @@
-﻿<div class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <ul class="navbar-nav w-100">
-        <li class="nav-item">
-            <a class="navbar-brand" href="">eShop</a>
-        </li>
+<header class="app-header sticky-top">
+    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom">
+        <div class="container">
+            <NavLink class="navbar-brand d-flex align-items-center gap-2 fw-bold text-dark" href="" Match="NavLinkMatch.All">
+                <span class="brand-badge">e</span>
+                <span>eShop</span>
+            </NavLink>
 
-        <AuthorizeView>
-            <Authorized>
-                <li class="nav-item">
-                    <a class="nav-link" href="outstandingorders">Outstanding Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="processedorder">Processed Orders</a>
-                </li>
-            </Authorized>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbarMenu" aria-controls="topNavbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        </AuthorizeView>
+            <div class="collapse navbar-collapse" id="topNavbarMenu">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0 ms-md-3">
+                    <li class="nav-item">
+                        <NavLink class="nav-link px-3" href="" Match="NavLinkMatch.All">
+                            Store
+                        </NavLink>
+                    </li>
+                    <AuthorizeView>
+                        <Authorized>
+                            <li class="nav-item">
+                                <NavLink class="nav-link px-3" href="outstandingorders">
+                                    Outstanding Orders
+                                </NavLink>
+                            </li>
+                            <li class="nav-item">
+                                <NavLink class="nav-link px-3" href="processedorder">
+                                    Processed Orders
+                                </NavLink>
+                            </li>
+                        </Authorized>
+                    </AuthorizeView>
+                </ul>
 
-        
-        <li class="nav-item ml-auto">
-            <AuthorizeView>
-                <Authorized>
-                    <NavLink class="nav-link" href="/logout">
-                        Sign Out
-                    </NavLink>
-                </Authorized>
-                <NotAuthorized>
-                    <NavLink class="nav-link" href="cart">
-                        <eShop.Web.CustomerPortal.Controls.CartComponent></eShop.Web.CustomerPortal.Controls.CartComponent>
-                    </NavLink>
-                </NotAuthorized>
-            </AuthorizeView>
-        </li>
-    </ul>
-</div>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <AuthorizeView>
+                        <Authorized>
+                            <li class="nav-item">
+                                <NavLink class="btn btn-sm btn-light border d-flex align-items-center gap-2" href="/logout">
+                                    <span class="oi oi-account-logout" aria-hidden="true"></span>
+                                    <span>Sign Out</span>
+                                </NavLink>
+                            </li>
+                        </Authorized>
+                        <NotAuthorized>
+                            <li class="nav-item">
+                                <NavLink class="nav-link p-0" href="cart">
+                                    <eShop.Web.CustomerPortal.Controls.CartComponent />
+                                </NavLink>
+                            </li>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
 
-@code {
-
-}
+<style>
+    .app-header .navbar {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+    }
+    .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background-color: var(--color-primary);
+        color: #ffffff;
+        font-weight: 800;
+        border-radius: var(--radius-sm);
+        font-size: 1.1rem;
+    }
+    .navbar-brand {
+        font-size: 1.25rem;
+        letter-spacing: -0.025em;
+    }
+    .app-header .nav-link {
+        font-weight: 500;
+        font-size: 0.925rem;
+        color: var(--color-text-muted);
+        border-radius: var(--radius-sm);
+        transition: all 0.15s ease;
+    }
+    .app-header .nav-link:hover, .app-header .nav-link.active {
+        color: var(--color-primary);
+        background-color: var(--color-primary-light);
+    }
+</style>

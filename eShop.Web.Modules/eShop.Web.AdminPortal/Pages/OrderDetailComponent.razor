@@ -1,76 +1,185 @@
-﻿@page "/orderdetail/{id:int}"
+@page "/orderdetail/{id:int}"
 @attribute [Authorize]
 @inject NavigationManager navigationManager
 @inject IProcessOrderUseCase processOrderUseCase
 @inject IViewOrderDetailUseCase ViewOrderDetailUseCase
 
-<h3>Order Detailt</h3>
-@if (order != null)
-{
-	<p>
-		<b>Customer Info:</b>
-	</p>
-	<p>@order.CustomerName</p>
-	<p>@order.CustomerAddress</p>
-	<p>@order.CustomerCity</p>
-	<p>@order.CustomerStateProvince</p>
-	<p>@order.CustomerCountry</p>
-	<br/>
+<div class="order-detail-page py-2">
+    <div class="mb-4">
+        <NavLink href="outstandingorders" class="btn btn-sm btn-light border d-inline-flex align-items-center gap-2">
+            <span class="oi oi-arrow-left" aria-hidden="true"></span>
+            <span>Back to Orders</span>
+        </NavLink>
+    </div>
 
-	<br/>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Product Name</th>
-				<th>Price</th>
-				<th>Quantity</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach(var item in order.LineItems)
-			{
-				<tr>
-					<td>@item.Product.Name</td>
-					<td>@item.Product.Price</td>
-					<td>@item.Quantity</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-	<br/>
-	<button type="button" class="btn btn-primary" @onclick="HandleProcessOrder">Mark Order as Processed</button>
-}
+    @if (order != null)
+    {
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 pb-2 border-bottom gap-2">
+            <div>
+                <h1 class="page-title mb-1">Order Details #@order.OrderId</h1>
+                <p class="text-muted small mb-0">
+                    Placed on: <strong>@(order.DatePlaced.HasValue ? order.DatePlaced.Value.ToString("MMMM dd, yyyy HH:mm") : "-")</strong>
+                </p>
+            </div>
+            <div>
+                @if (order.DateProcessed.HasValue)
+                {
+                    <span class="badge badge-clean badge-success-clean px-3 py-2">
+                        <span class="oi oi-check me-1" aria-hidden="true"></span>
+                        <span>Processed on @order.DateProcessed.Value.ToString("yyyy-MM-dd")</span>
+                    </span>
+                }
+                else
+                {
+                    <span class="badge badge-clean badge-pending px-3 py-2">
+                        <span class="oi oi-clock me-1" aria-hidden="true"></span>
+                        <span>Awaiting Processing</span>
+                    </span>
+                }
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card h-100 border shadow-sm">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                            <span class="oi oi-person text-primary" aria-hidden="true"></span>
+                            <span>Customer &amp; Shipping Information</span>
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-2">@order.CustomerName</h6>
+                        <p class="text-secondary mb-1">@order.CustomerAddress</p>
+                        <p class="text-secondary mb-0">
+                            @order.CustomerCity, @order.CustomerStateProvince, @order.CustomerCountry
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card h-100 border shadow-sm">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                            <span class="oi oi-cog text-primary" aria-hidden="true"></span>
+                            <span>Order Management</span>
+                        </h6>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        @if (order.DateProcessed.HasValue)
+                        {
+                            <div class="alert alert-success d-flex align-items-center gap-2 mb-0">
+                                <span class="oi oi-check" aria-hidden="true"></span>
+                                <div>
+                                    This order was processed by <strong>@order.AdminUser</strong> on @order.DateProcessed.Value.ToString("yyyy-MM-dd HH:mm").
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <p class="text-muted small mb-3">
+                                    Clicking below will mark this order as fulfilled and notify warehouse dispatch.
+                                </p>
+                                <button type="button" 
+                                        class="btn btn-primary py-2 px-4 d-flex align-items-center gap-2" 
+                                        @onclick="HandleProcessOrder">
+                                    <span class="oi oi-task" aria-hidden="true"></span>
+                                    <span>Mark Order as Processed</span>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="mb-0 fw-bold">Order Line Items</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (order.LineItems != null)
+                        {
+                            @foreach (var item in order.LineItems)
+                            {
+                                <tr>
+                                    <td class="fw-medium">@item.Product.Name</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end text-muted">@item.Product.Price.ToString("c")</td>
+                                    <td class="text-end fw-bold">@((item.Product.Price * item.Quantity).ToString("c"))</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <span class="oi oi-warning" aria-hidden="true"></span>
+            </div>
+            <h4 class="empty-state-title">Order Not Found</h4>
+            <p class="empty-state-text">Could not load the requested order details.</p>
+        </div>
+    }
+</div>
+
+<style>
+    .page-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+</style>
 
 @code {
-	[Parameter]
-	public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
-	private Order order;
+    private Order? order;
+    private AuthenticationState? authState;
 
-	private AuthenticationState authState;
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
 
-	[CascadingParameter]
-	private Task<AuthenticationState> authStateTask { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        if (authStateTask != null)
+        {
+            authState = await authStateTask;
+        }
+    }
 
-	protected override async Task OnInitializedAsync()
-	{
-		authState = await authStateTask;
-	}
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Id > 0)
+        {
+            order = ViewOrderDetailUseCase.Execute(Id);
+        }
+    }
 
-	protected override void OnParametersSet()
-	{
-		base.OnParametersSet();
-		if(Id > 0)
-		{
-			order = ViewOrderDetailUseCase.Execute(Id);
-		}
-	}
-	private void HandleProcessOrder()
-	{
-		if (order != null && authState != null)
-		{
-			processOrderUseCase.Execute(order.OrderId.Value, authState.User.Identity.Name);
-			navigationManager.NavigateTo("/outstandingorders");
-		}
-	}
+    private void HandleProcessOrder()
+    {
+        if (order != null && authState != null && order.OrderId.HasValue && authState.User.Identity?.Name != null)
+        {
+            processOrderUseCase.Execute(order.OrderId.Value, authState.User.Identity.Name);
+            navigationManager.NavigateTo("/outstandingorders");
+        }
+    }
 }

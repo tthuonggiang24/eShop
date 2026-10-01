@@ -1,52 +1,96 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
-
+@using Microsoft.AspNetCore.Components.Forms
 
 @if (customer != null)
 {
-	<EditForm Model="customer" class="form-line" OnValidSubmit="HandleValidSubmit">
-		<DataAnnotationsValidator></DataAnnotationsValidator>
-		<ValidationSummary></ValidationSummary>
+    <div class="card customer-form-card border shadow-sm">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                <span class="oi oi-person text-primary" aria-hidden="true"></span>
+                <span>Shipping &amp; Contact Information</span>
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <EditForm Model="customer" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-danger py-2 small mb-4" />
 
-		<div class="form-group">
-			<label for="name">Name</label>
-			<InputText id="name" @bind-Value="customer.CustomerName" class="form-control"></InputText>
-		</div>
+                <div class="mb-3">
+                    <label for="customerName" class="form-label">Full Name</label>
+                    <InputText id="customerName" 
+                               placeholder="e.g. John Doe" 
+                               @bind-Value="customer.CustomerName" 
+                               class="form-control" />
+                    <ValidationMessage For="@(() => customer.CustomerName)" />
+                </div>
 
-		<div class="form-group">
-			<label for="address">Address</label>
-			<InputText id="name" @bind-Value="customer.CustomerAddress" class="form-control"></InputText>
-		</div>
+                <div class="mb-3">
+                    <label for="customerAddress" class="form-label">Delivery Address</label>
+                    <InputText id="customerAddress" 
+                               placeholder="e.g. 123 Main Street, Apt 4B" 
+                               @bind-Value="customer.CustomerAddress" 
+                               class="form-control" />
+                    <ValidationMessage For="@(() => customer.CustomerAddress)" />
+                </div>
 
-		<div class="form-group">
-			<label for="city">City</label>
-			<InputText id="name" @bind-Value="customer.CustomerCity" class="form-control"></InputText>
-		</div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-5">
+                        <label for="customerCity" class="form-label">City</label>
+                        <InputText id="customerCity" 
+                                   placeholder="City" 
+                                   @bind-Value="customer.CustomerCity" 
+                                   class="form-control" />
+                        <ValidationMessage For="@(() => customer.CustomerCity)" />
+                    </div>
 
-		<div class="form-group">
-			<label for="province">Province</label>
-			<InputText id="name" @bind-Value="customer.CustomerStateProvince" class="form-control"></InputText>
-		</div>
+                    <div class="col-md-4">
+                        <label for="customerProvince" class="form-label">State / Province</label>
+                        <InputText id="customerProvince" 
+                                   placeholder="State / Province" 
+                                   @bind-Value="customer.CustomerStateProvince" 
+                                   class="form-control" />
+                        <ValidationMessage For="@(() => customer.CustomerStateProvince)" />
+                    </div>
 
-		<div class="form-group">
-			<label for="country">Country</label>
-			<InputText id="name" @bind-Value="customer.CustomerCountry" class="form-control"></InputText>
-		</div>
+                    <div class="col-md-3">
+                        <label for="customerCountry" class="form-label">Country</label>
+                        <InputText id="customerCountry" 
+                                   placeholder="Country" 
+                                   @bind-Value="customer.CustomerCountry" 
+                                   class="form-control" />
+                        <ValidationMessage For="@(() => customer.CustomerCountry)" />
+                    </div>
+                </div>
 
-		<button type="submit" class="btn btn-primary">Place Order</button>
-	</EditForm>
+                <button type="submit" class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                    <span class="oi oi-check" aria-hidden="true"></span>
+                    <span>Complete Order</span>
+                </button>
+            </EditForm>
+        </div>
+    </div>
 }
 
+<style>
+    .customer-form-card {
+        border-radius: var(--radius-md);
+        background-color: #ffffff;
+    }
+</style>
+
 @code {
-	private CustomerViewModel customer;
-	[Parameter]
-	public EventCallback<CustomerViewModel> OnCustomerInfoSubmitted { get; set; }
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-		customer = new CustomerViewModel();
-	}
-	private void HandleValidSubmit()
-	{
-		OnCustomerInfoSubmitted.InvokeAsync(customer);
-	}
+    private CustomerViewModel customer = new CustomerViewModel();
+
+    [Parameter]
+    public EventCallback<CustomerViewModel> OnCustomerInfoSubmitted { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        customer = new CustomerViewModel();
+    }
+
+    private void HandleValidSubmit()
+    {
+        OnCustomerInfoSubmitted.InvokeAsync(customer);
+    }
 }

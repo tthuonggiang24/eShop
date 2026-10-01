@@ -1,27 +1,39 @@
-﻿@if (Orders != null && Orders.Count() > 0)
+@if (Orders != null && Orders.Any())
 {
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Date Placed</th>
-				<th>Order Id</th>
-				<th>Country</th>
-				<th>State / Province</th>
-				<th>City</th>
-				<th>Customer Name</th>
-
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var order in Orders)
-			{
-				<OrderItemComponent Order="order"></OrderItemComponent>
-			}
-		</tbody>
-	</table>
+    <div class="card border shadow-sm">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 140px;">Date Placed</th>
+                        <th style="width: 110px;">Order #</th>
+                        <th>Customer &amp; Location</th>
+                        <th style="width: 160px;">Status</th>
+                        <th style="width: 90px;" class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Orders)
+                    {
+                        <OrderItemComponent Order="order" />
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <span class="oi oi-inbox" aria-hidden="true"></span>
+        </div>
+        <h4 class="empty-state-title">No Orders Found</h4>
+        <p class="empty-state-text">There are currently no orders to display in this list.</p>
+    </div>
 }
 
 @code {
-	[Parameter]
-	public IEnumerable<Order> Orders{ get; set; }
+    [Parameter]
+    public IEnumerable<Order> Orders { get; set; }
 }

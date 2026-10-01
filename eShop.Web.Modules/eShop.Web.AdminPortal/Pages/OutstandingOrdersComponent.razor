@@ -1,20 +1,43 @@
-﻿@page "/outstandingorders"
+@page "/outstandingorders"
 @page "/admin"
 
 @attribute [Authorize]
 
 @inject IViewOutstandingOrdersUseCase viewOutstandingOrdersUseCase
 
-<h3>Outstanding Orders</h3>
-<br/>
-<OrderListComponent Orders="orders"></OrderListComponent>
+<div class="admin-page py-2">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 pb-2 border-bottom gap-2">
+        <div>
+            <h1 class="page-title mb-1">Outstanding Orders</h1>
+            <p class="text-muted small mb-0">Orders that require fulfillment and processing</p>
+        </div>
+        @if (orders != null)
+        {
+            <div>
+                <span class="badge badge-clean badge-pending px-3 py-2">
+                    @orders.Count() Pending Orders
+                </span>
+            </div>
+        }
+    </div>
 
+    <OrderListComponent Orders="orders" />
+</div>
+
+<style>
+    .page-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+</style>
 
 @code {
-	private IEnumerable<Order> orders;
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-		orders = viewOutstandingOrdersUseCase.Execute();
-	}
+    private IEnumerable<Order> orders = Enumerable.Empty<Order>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orders = viewOutstandingOrdersUseCase.Execute();
+    }
 }

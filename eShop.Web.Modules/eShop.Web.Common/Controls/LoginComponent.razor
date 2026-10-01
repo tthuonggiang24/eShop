@@ -1,37 +1,80 @@
-﻿
 @inject NavigationManager navigationManager
 
-<h3>Login</h3>
-<br/>
+<div class="login-container d-flex justify-content-center align-items-center py-5">
+    <div class="card login-card shadow-sm border p-4 p-md-5">
+        <div class="text-center mb-4">
+            <div class="login-icon-badge mb-3">
+                <span class="oi oi-lock-locked" aria-hidden="true"></span>
+            </div>
+            <h3 class="fw-bold mb-1">Welcome Back</h3>
+            <p class="text-muted small">Sign in to access the management portal</p>
+        </div>
 
-@if (loginViewModel != null)
-{
-	<EditForm Model="loginViewModel" OnValidSubmit="HandleValidSubmit" class="form-line">
-		<DataAnnotationsValidator></DataAnnotationsValidator>
-		<ValidationSummary></ValidationSummary>
+        @if (loginViewModel != null)
+        {
+            <EditForm Model="loginViewModel" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-danger py-2 small" />
 
-		<div class="form-group">
-			<label for="name">User Name</label>
-			<InputText id="name" @bind-Value="loginViewModel.UsersName" class="form-control"></InputText>
-		</div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">User Name</label>
+                    <InputText id="username" 
+                               placeholder="Enter your username" 
+                               @bind-Value="loginViewModel.UsersName" 
+                               class="form-control" />
+                </div>
 
-		<div class="form-group">
-			<label for="password">Password</label>
-			<InputText id="password" @bind-Value="loginViewModel.Password" type="password" class="form-control"></InputText>
-		</div>
-		<button type="submit" class="btn btn-primary">Login</button>
-	</EditForm>
-}
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <InputText id="password" 
+                               placeholder="Enter your password" 
+                               @bind-Value="loginViewModel.Password" 
+                               type="password" 
+                               class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    Sign In
+                </button>
+            </EditForm>
+        }
+    </div>
+</div>
+
+<style>
+    .login-container {
+        min-height: 60vh;
+    }
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        border-radius: var(--radius-lg);
+        background-color: #ffffff;
+    }
+    .login-icon-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-pill);
+        background-color: var(--color-primary-light);
+        color: var(--color-primary);
+        font-size: 1.25rem;
+    }
+</style>
 
 @code {
-	private LoginViewModel loginViewModel;
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-		loginViewModel = new LoginViewModel();
-	}
-	private void HandleValidSubmit()
-	{
-		navigationManager.NavigateTo($"/authenticate?user={loginViewModel.UsersName}&pwd={loginViewModel.Password}", true);
-	}
+    private LoginViewModel loginViewModel = new LoginViewModel();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        loginViewModel = new LoginViewModel();
+    }
+
+    private void HandleValidSubmit()
+    {
+        navigationManager.NavigateTo($"/authenticate?user={loginViewModel.UsersName}&pwd={loginViewModel.Password}", true);
+    }
 }
